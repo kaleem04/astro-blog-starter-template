@@ -1,0 +1,18 @@
+---
+import { site } from "../data/site";
+---
+<footer class="footer">
+	<div class="container footer-grid">
+		<div>
+			<a class="wordmark" href="/" aria-label="Opervia home"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M7.5 12.5l3 3 6-7"></path></svg><span>Opervia</span></a>
+			<p>Websites & lead follow-up for HVAC companies</p>
+		</div>
+		<div>
+			<a href={`mailto:${site.email}`}>{site.email}</a>
+			<p class="mono-meta">Replies within 24 hours, Mon-Fri</p>
+			<a href="/privacy/">Privacy</a>
+		</div>
+	</div>
+	<!-- TODO: Add a mailing address if one is publicly required or available. -->
+	<div class="container footer-bottom">© Opervia {new Date().getFullYear()}</div>
+</footer>

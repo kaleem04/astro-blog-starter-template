@@ -1,0 +1,41 @@
+---
+import { site } from "../data/site";
+---
+<header class="site-header" data-header>
+	<div class="container header-inner">
+		<a class="wordmark" href="/" aria-label="Opervia home">
+			<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M7.5 12.5l3 3 6-7"></path></svg>
+			<span>Opervia</span>
+		</a>
+		<button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-nav"><span class="sr-only">Toggle menu</span><span aria-hidden="true"></span></button>
+		<nav id="primary-nav" class="primary-nav" aria-label="Primary">
+			{site.nav.map((item) => <a href={item.href}>{item.label}</a>)}
+			<a class="button" href="/#contact">Free website review</a>
+		</nav>
+	</div>
+</header>
+<script>
+	const header = document.querySelector("[data-header]");
+	const button = document.querySelector<HTMLButtonElement>(".menu-button");
+	const nav = document.querySelector<HTMLElement>(".primary-nav");
+	let lastY = window.scrollY;
+	button?.addEventListener("click", () => {
+		const open = button.getAttribute("aria-expanded") === "true";
+		button.setAttribute("aria-expanded", String(!open));
+		nav?.classList.toggle("open", !open);
+		if (!open) nav?.querySelector<HTMLAnchorElement>("a")?.focus();
+	});
+	document.addEventListener("keydown", (event) => {
+		if (event.key === "Escape" && button?.getAttribute("aria-expanded") === "true") {
+			button.setAttribute("aria-expanded", "false");
+			nav?.classList.remove("open");
+			button.focus();
+		}
+	});
+	window.addEventListener("scroll", () => {
+		const y = window.scrollY;
+		if (y < 40) header?.classList.remove("hidden");
+		else header?.classList.toggle("hidden", y > lastY);
+		lastY = y;
+	}, { passive: true });
+</script>

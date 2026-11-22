@@ -1,0 +1,17 @@
+---
+import { site } from "../data/site";
+---
+<section class="section" aria-labelledby="services-title">
+	<div class="container">
+		<p class="eyebrow">What I set up</p>
+		<h2 id="services-title" class="section-title">Three parts of a faster first response</h2>
+		<div class="service-grid">
+			{site.services.map((service, index) => (
+				<article class:list={["ticket", "service-ticket", `service-ticket-${index + 1}`]}>
+					<div class="ticket-head"><span>No. {service.number}</span><span class="status-dot waiting" aria-label="Waiting"></span></div>
+					<div class="ticket-body"><h3>{service.title}</h3><p>{service.description}</p></div>
+				</article>
+			))}
+		</div>
+	</div>
+</section>

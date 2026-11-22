@@ -1,0 +1,57 @@
+<section class="section" id="calculator" aria-labelledby="calculator-title">
+	<div class="container">
+		<p class="eyebrow">Missed-call cost</p>
+		<h2 id="calculator-title" class="section-title">What missed calls could mean</h2>
+		<div class="calculator-grid">
+			<form class="calculator ticket" id="cost-calculator" novalidate>
+				<div class="ticket-head"><span>Cost worksheet</span><span class="number">No. 101</span></div>
+				<div class="ticket-body">
+					<label for="missed-calls">Calls you miss per week</label>
+					<input id="missed-calls" name="missedCalls" type="number" min="0" step="1" value="5" />
+					<p class="field-error" id="missed-calls-error"></p>
+					<label for="job-value">Average job value ($)</label>
+					<input id="job-value" name="jobValue" type="number" min="0" step="1" value="500" />
+					<p class="field-error" id="job-value-error"></p>
+					<label for="book-share">Share you'd book if you answered (%)</label>
+					<input id="book-share" name="bookShare" type="number" min="0" max="100" step="1" value="25" />
+					<p class="field-error" id="book-share-error"></p>
+					<button class="button" type="submit">Calculate</button>
+				</div>
+			</form>
+			<div class="calculator-result ticket" aria-live="polite">
+				<div class="ticket-head"><span>Estimate</span><span class="status-dot" aria-hidden="true"></span></div>
+				<div class="ticket-body">
+					<p class="mono-meta">Estimated monthly value</p>
+					<p class="result" id="calculator-output">$0</p>
+					<p>Your numbers, not a forecast.</p>
+					<p class="mono-meta">Stored nowhere. Sent nowhere.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script>
+	const form = document.querySelector<HTMLFormElement>("#cost-calculator");
+	const output = document.querySelector<HTMLElement>("#calculator-output");
+	form?.addEventListener("submit", (event) => {
+		event.preventDefault();
+		const missed = document.querySelector<HTMLInputElement>("#missed-calls");
+		const value = document.querySelector<HTMLInputElement>("#job-value");
+		const share = document.querySelector<HTMLInputElement>("#book-share");
+		let valid = true;
+		const setError = (input: HTMLInputElement | null, message: string) => {
+			const error = document.querySelector<HTMLElement>(`#${input?.id}-error`);
+			if (input) input.setAttribute("aria-invalid", String(Boolean(message)));
+			if (input) input.setAttribute("aria-describedby", `${input.id}-error`);
+			if (error) error.textContent = message;
+			if (message) valid = false;
+		};
+		const missedNumber = Number(missed?.value);
+		const valueNumber = Number(value?.value);
+		const shareNumber = Number(share?.value);
+		setError(missed, missed?.value === "" || !Number.isFinite(missedNumber) || missedNumber < 0 ? "Enter a non-negative number." : "");
+		setError(value, value?.value === "" || !Number.isFinite(valueNumber) || valueNumber < 0 ? "Enter a non-negative number." : "");
+		setError(share, share?.value === "" || !Number.isFinite(shareNumber) || shareNumber < 0 || shareNumber > 100 ? "Enter a percentage from 0 to 100." : "");
+		if (valid && output) output.textContent = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(missedNumber * 4.33 * (shareNumber / 100) * valueNumber);
+	});
+</script>

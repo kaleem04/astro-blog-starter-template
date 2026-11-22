@@ -1,0 +1,22 @@
+---
+import { site } from "../data/site";
+---
+<section class="section" id="work" aria-labelledby="work-title">
+	<div class="container">
+		<p class="eyebrow">Work</p>
+		<h2 id="work-title" class="section-title">Sample work</h2>
+		<div class="sample-grid">
+			{site.samples.map((sample) => (
+				<article class="ticket sample-ticket">
+					<div class="ticket-head"><span>No. {sample.number}</span><span class="badge">Sample design</span></div>
+					<div class="ticket-body">
+						<h3>{sample.name} <span class="mono-meta">(Sample)</span></h3>
+						<p class="mono-meta">Sample design, not a real client</p>
+						{sample.url ? <a class="button" href={sample.url}>View sample</a> : <span class="button disabled" aria-disabled="true">Coming soon</span>}
+					</div>
+				</article>
+			))}
+		</div>
+		<p class="work-note">I'm early in this work, so these are designed samples, not client results.</p>
+	</div>
+</section>

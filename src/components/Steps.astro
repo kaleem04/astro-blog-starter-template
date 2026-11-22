@@ -1,0 +1,17 @@
+---
+import { site } from "../data/site";
+---
+<section class="section" id="how-it-works" aria-labelledby="steps-title">
+	<div class="container">
+		<p class="eyebrow">How it works</p>
+		<h2 id="steps-title" class="section-title">A short, clear process</h2>
+		<ol class="steps-grid">
+			{site.steps.map((step) => (
+				<li class="ticket step-ticket">
+					<div class="ticket-head"><span>No. {step.number}</span><span class="status-dot waiting"></span></div>
+					<div class="ticket-body"><h3>{step.title}</h3><p>{step.description}</p></div>
+				</li>
+			))}
+		</ol>
+	</div>
+</section>

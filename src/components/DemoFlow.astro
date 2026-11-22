@@ -1,0 +1,39 @@
+---
+import { site } from "../data/site";
+---
+<section class="section demo-section" aria-labelledby="demo-title">
+	<div class="container demo-grid">
+		<div>
+			<p class="eyebrow">Interactive demo</p>
+			<h2 id="demo-title">From request to alert</h2>
+			<p class="reading">Scenario: “My furnace stopped working and it's freezing. Can someone come today?”</p>
+			<button class="button" id="run-demo" type="button">Run demo</button>
+			<p class="mono-meta" id="demo-status" aria-live="polite">Sample data. No real customer data.</p>
+		</div>
+		<ol class="demo-flow" aria-label="Follow-up demo steps">
+			{site.demoSteps.map((step, index) => (
+				<li class="ticket demo-step" data-step={index}>
+					<div class="ticket-head"><span>Step {index + 1}</span><span class="status-dot waiting"></span></div>
+					<div class="ticket-body"><h3>{step.title}</h3><p>{step.detail}</p></div>
+				</li>
+			))}
+		</ol>
+	</div>
+</section>
+<script>
+	const button = document.querySelector<HTMLButtonElement>("#run-demo");
+	const status = document.querySelector<HTMLElement>("#demo-status");
+	const steps = Array.from(document.querySelectorAll<HTMLElement>(".demo-step"));
+	button?.addEventListener("click", () => {
+		steps.forEach((step) => { step.classList.remove("active"); step.querySelector(".status-dot")?.classList.add("waiting"); });
+		if (status) status.textContent = "Starting demo.";
+		steps.forEach((step, index) => {
+			window.setTimeout(() => {
+				step.classList.add("active");
+				step.querySelector(".status-dot")?.classList.remove("waiting");
+				if (status) status.textContent = `Step ${index + 1} complete: ${step.querySelector("h3")?.textContent}`;
+				if (index === steps.length - 1 && status) status.textContent = "Demo complete. Sample data. No real customer data.";
+			}, index * 650);
+		});
+	});
+</script>

@@ -1,0 +1,60 @@
+---
+import { site } from "../data/site";
+---
+<section class="section contact" id="contact" aria-labelledby="contact-title">
+	<div class="container contact-grid">
+		<div>
+			<p class="eyebrow">Free website review</p>
+			<h2 id="contact-title">Send me your website. I'll record a short video showing where I'd start.</h2>
+		</div>
+		<div>
+			<form id="contact-form" novalidate>
+				<label for="name">Name</label><input id="name" name="name" required autocomplete="name" aria-describedby="name-error" /><p class="field-error" id="name-error"></p>
+				<label for="business">Business name</label><input id="business" name="business" required aria-describedby="business-error" /><p class="field-error" id="business-error"></p>
+				<label for="website">Website <span class="mono-meta">(optional)</span></label><input id="website" name="website" type="url" />
+				<label for="email">Email</label><input id="email" name="email" type="email" required autocomplete="email" aria-describedby="email-error" /><p class="field-error" id="email-error"></p>
+				<label for="need">What you need</label>
+				<select id="need" name="need" required aria-describedby="need-error"><option value="">Choose one</option><option>New website</option><option>Lead follow-up</option><option>Both</option><option>Website review</option></select><p class="field-error" id="need-error"></p>
+				<label for="message">Message <span class="mono-meta">(optional)</span></label><textarea id="message" name="message" rows="5"></textarea>
+				<button class="button" type="submit">Open email draft</button>
+			</form>
+			<p id="contact-status" aria-live="polite" class="contact-status"></p>
+			<button class="button secondary" id="copy-email" type="button">Copy email</button>
+			{site.bookingUrl
+				? <a class="button" href={site.bookingUrl}>Book a 15-minute call</a>
+				: <span class="button disabled" aria-disabled="true">Booking link coming soon</span>}
+		</div>
+	</div>
+</section>
+<script>
+	const contactForm = document.querySelector<HTMLFormElement>("#contact-form");
+	const contactStatus = document.querySelector<HTMLElement>("#contact-status");
+	contactForm?.addEventListener("submit", (event) => {
+		event.preventDefault();
+		const fields = ["name", "business", "email", "need"];
+		let valid = true;
+		fields.forEach((id) => {
+			const input = document.querySelector<HTMLInputElement | HTMLSelectElement>(`#${id}`);
+			const error = document.querySelector<HTMLElement>(`#${id}-error`);
+			let message = input?.value.trim() ? "" : "This field is required.";
+			if (id === "email" && input?.value && !(input as HTMLInputElement).checkValidity()) message = "Enter a valid email address.";
+			if (error) error.textContent = message;
+			input?.setAttribute("aria-invalid", String(Boolean(message)));
+			if (message) valid = false;
+		});
+		if (!valid) { if (contactStatus) contactStatus.textContent = "Please correct the marked fields."; return; }
+		const data = new FormData(contactForm);
+		const subject = `Website review request — ${data.get("business")}`;
+		const body = `Name: ${data.get("name")}\nBusiness: ${data.get("business")}\nWebsite: ${data.get("website") || "Not provided"}\nEmail: ${data.get("email")}\nWhat I need: ${data.get("need")}\n\n${data.get("message") || ""}`;
+		if (contactStatus) contactStatus.textContent = "Opening your email app. If it did not open, copy the email address below.";
+		window.location.href = `mailto:kaleem04.dev@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+	});
+	document.querySelector("#copy-email")?.addEventListener("click", async () => {
+		try {
+			await navigator.clipboard.writeText("kaleem04.dev@gmail.com");
+			if (contactStatus) contactStatus.textContent = "Email address copied.";
+		} catch {
+			if (contactStatus) contactStatus.textContent = "Email address: kaleem04.dev@gmail.com";
+		}
+	});
+</script>
